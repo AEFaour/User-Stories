@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -18,16 +20,16 @@ class AdvertController extends AbstractController
 {
     /**
      * @Route("/{page}", name="advert_index", requirements={"page" = "\d+"}, defaults={"page" = 1})
+     * @param $page
      * @return Response
      */
-    public function index()
+    public function index($page)
     {
-        $url = $this->generateUrl(
-            "advert_view",
-            ['id' => 5]
-        );
+        if ($page < 1) {
+            throw $this->createNotFoundException('Page "' . $page . '" inexistante');
+        }
 
-        return new Response("L'URL de l'annonce 5 est: " . $url);
+        return $this->render('advert/index.html.twig');
     }
 
     /**
@@ -37,29 +39,59 @@ class AdvertController extends AbstractController
      */
     public function view($id)
     {
-        return new Response("Affichage de l'annonce d'id: " . $id);
+
+        return $this->render('advert/view.html.twig', [
+            'id' => $id
+        ]);
     }
 
     /**
      * @Route("/add", name="advert_add")
+     * @param Request $request
+     * @return Response
      */
-    public function  add(){
+    public function add(Request $request)
+    {
+
+        if ($request->isMethod('POST')) {
+            $this->addFlash('notice', 'Annonce est bien enregistrée');
+
+            return $this->redirectToRoute('advert_view', [
+                'id' => 5
+            ]);
+        }
+
+        return $this->render('advert/add.html.twig');
+
 
     }
 
     /**
      * @Route("/edit/{id}", name="advert_edit", requirements={"id" = "\d+"})
+     * @param $id
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function  edit(){
+    public function edit($id, Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $this->addFlash('notice', 'Annonce est bien modifiée');
 
+            return $this->redirectToRoute('advert_view', [
+                'id' => 5
+            ]);
+        }
+
+        return $this->render('advert/edit.html.twig');
     }
 
     /**
      * @Route("/delete/{id}", name="advert_delete", requirements={"id" = "\d+"})
+     * @param $id
+     * @return Response
      */
-    public function  delete(){
-
+    public function delete($id)
+    {
+        return $this->render('advert/delete.html.twig');
     }
-
-
 }
