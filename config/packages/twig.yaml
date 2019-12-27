@@ -1,2 +1,6 @@
 twig:
-    default_path: '%kernel.project_dir%/templates'
+  default_path: '%kernel.project_dir%/templates'
+
+  globals:
+    copyright: "Anas-Emmanuel FAOUR Décembre-2019 © Tous droits réservés"
+    maintitle: "User Stories"

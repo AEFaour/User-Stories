@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
-{% block title %}View!{% endblock %}
+{% block title %}{{ parent() }} - View!{% endblock %}
 {% block body %}
     <h1> Hello de l'annonce numéro {{ id }}</h1>
-<div>
-    {% for message in  app.flashes('info') %}
-        <p>Message flash : {{ message }}</p>
-    {% endfor %}
-</div>
+    <div>
+        {% for message in  app.flashes('info') %}
+            <p>Message flash : {{ message }}</p>
+        {% endfor %}
+    </div>
 
     <p>
-        Ici nous pourrons lire l'annonce ayant comme id : {{ id }} <br />
+        Ici nous pourrons lire l'annonce ayant comme id : {{ id }} <br/>
         Mais pour l'instant, nous ne savons pas encore le faire, cela viendra !
     </p>
 
