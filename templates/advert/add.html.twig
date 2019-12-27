@@ -1,4 +1,8 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }} - Ajouter!{% endblock %}
 {% block body %}
+
+    {{ include('advert/_form.html.twig') }}
+
+    {{ parent() }}
 {% endblock %}
