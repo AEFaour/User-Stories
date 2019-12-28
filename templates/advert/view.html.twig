@@ -5,10 +5,10 @@
 {% endblock %}
 {% block body %}
     <h2>{{ advert.title }}</h2>
-    <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
+    <i>Par {{ advert.user }}, le {{ advert.createdAt|date('d/m/Y') }}</i>
 
     <div class="well">
-        {{ advert.content }}
+        {{ advert.text }}
     </div>
 
     <p>
@@ -16,11 +16,11 @@
             <i class="glyphicon glyphicon-chevron-left"></i>
             Retour à la liste
         </a>
-        <a href="{{ path('advert_edit', {'id': advert.id}) }}" class="btn btn-default">
+        <a href="#" class="btn btn-default">
             <i class="glyphicon glyphicon-edit"></i>
             Modifier l'annonce
         </a>
-        <a href="{{ path('advert_delete', {'id': advert.id}) }}" class="btn btn-danger">
+        <a href="#" class="btn btn-danger">
             <i class="glyphicon glyphicon-trash"></i>
             Supprimer l'annonce
         </a>

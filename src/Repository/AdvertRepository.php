@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Advert;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 /**
  * @method Advert|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +19,25 @@ class AdvertRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Advert::class);
+    }
+
+    /**
+     * @param Category $category
+     * @return Query
+     */
+    public function getAllByCategory(Category $category){
+        $qb = $this->createQueryBuilder('c')
+            ->select('c, auth')
+            ->join('c.category', 'auth')
+            ->where('auth.id = :id')
+            ->setParameter('id', $category->getId())
+        ;
+        return $qb->getQuery();
+    }
+    public function getAllAdverts(){
+        $qb = $this->createQueryBuilder('a')
+            ->select('a');
+        return $qb->getQuery();
     }
 
     // /**

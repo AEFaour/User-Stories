@@ -15,8 +15,8 @@
                 <a href="{{ path('advert_view', {'id': advert.id}) }}">
                     {{ advert.title }}
                 </a>
-                par {{ advert.author }},
-                le {{ advert.date|date('d/m/Y') }}
+                par {{ advert.user }},
+                le {{ advert.createdAt|date('d/m/Y') }}
             </li>
         {% else %}
             <li>Pas (encore !) d'annonces</li>

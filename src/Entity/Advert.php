@@ -36,6 +36,18 @@ class Advert
      */
     private $photo;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="adverts")
+     * @var Category
+     */
+    private $category;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="adverts")
+     * @var User
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +97,30 @@ class Advert
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

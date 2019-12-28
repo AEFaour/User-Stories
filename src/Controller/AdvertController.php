@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Advert;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,22 +34,23 @@ class AdvertController extends AbstractController
             [
                 'title' => 'Recherche développpeur Symfony',
                 'id' => 1,
-                'author' => 'Alexandre',
-                'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-                'date' => new \Datetime()
+                'user' => 'Alexandra',
+                'text' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+                'createdAt' => new \Datetime()
             ],
             [
                 'title' => 'Mission de webmaster',
                 'id' => 2,
-                'author' => 'Hugo',
-                'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-                'date' => new \Datetime()],
+                'user' => 'Hugo',
+                'text' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
+                'createdAt' => new \Datetime()
+            ],
             [
-                'title' => 'Offre de stage webdesigner',
+                'title' => 'Recherche chef de Projet',
                 'id' => 3,
-                'author' => 'Mathieu',
-                'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
-                'date' => new \Datetime()
+                'user' => 'Rony',
+                'text' => 'Nous recherchons un chef de projet - méthode Agile…',
+                'createdAt' => new \Datetime()
             ]
         ];
         return $this->render('advert/index.html.twig', [
@@ -60,18 +62,19 @@ class AdvertController extends AbstractController
      * @Route("/view/{id}", name="advert_view", requirements={"id" = "\d+"})
      * @param $id
      * @return Response
-     * @throws \Exception
      */
     public function view($id)
     {
+        $repository = $this ->getDoctrine()->getManager()
+            ->getRepository(Advert::class);
 
-        $advert = [
-            'title' => 'Recherche développpeur Symfony',
-            'id' => $id,
-            'author' => 'Alexandre',
-            'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-            'date' => new \Datetime()
-        ];
+        $advert = $repository->find($id);
+
+        if($advert===null){
+            throw new NotFoundHttpException("L'annonce d'id ". $id . " n'existe pas.");
+        }
+
+
         return $this->render('advert/view.html.twig', [
                 'advert' => $advert,
             ]
@@ -86,12 +89,21 @@ class AdvertController extends AbstractController
      */
     public function add(Request $request)
     {
+        $advert= new Advert();
+        $advert->setTitle("Recherche d'un développeur React - Node");
+        $advert->setUser("Alexandra");
+        $advert->setText("Nous cherchons un développeur Fullstak React - Node Js sur Paris");
+        $advert->setCreatedAt(28/12/2019);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($advert);
+        $em->flush();
 
         if ($request->isMethod('POST')) {
             $request->getSession()->getFlashBag()->add('notice', 'Annonce est bien enregistrée');
 
             return $this->redirectToRoute('advert_view', [
-                'id' => 5
+                'id' => $advert->getId()
             ]);
         }
 
@@ -117,9 +129,9 @@ class AdvertController extends AbstractController
             [
                 'title' => 'Recherche développpeur Symfony',
                 'id' => $id,
-                'author' => 'Alexandre',
-                'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-                'date' => new \Datetime()
+                'user' => 'Alexandre',
+                'text' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+                'createdAt' => new \Datetime()
             ];
         return $this->render('advert/edit.html.twig', [
             'advert' => $advert,
@@ -145,9 +157,9 @@ class AdvertController extends AbstractController
     {
 
         $listAdverts = [
-            ['id' => 2, 'title' => 'Recherche développeur Symfony'],
-            ['id' => 5, 'title' => 'Mission de webmaster'],
-            ['id' => 9, 'title' => 'Offre de stage webdesigner']
+            ['id' => 1, 'title' => 'Recherche développeur Symfony'],
+            ['id' => 2, 'title' => 'Mission de webmaster'],
+            ['id' => 3, 'title' => 'Offre de stage webdesigner']
         ];
         return $this->render('advert/menu.html.twig', [
                 'listAdverts' => $listAdverts
