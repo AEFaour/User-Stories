@@ -1,4 +1,25 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }} - Modifier!{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock %}
 {% block body %}
+    <h2>Modifier une annonce</h2>
+
+    {{ include("advert/_form.html.twig") }}
+
+    <p>
+        Vous éditez une annonce déjà existante, merci de ne pas changer
+        l'esprit générale de l'annonce déjà publiée.
+    </p>
+
+    <p>
+        <a href="{{ path('advert_view', {'id': advert.id}) }}" class="btn btn-default">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Retour à l'annonce
+        </a>
+    </p>
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
 {% endblock %}

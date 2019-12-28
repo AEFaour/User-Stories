@@ -1,8 +1,18 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }} - Ajouter!{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock %}
 {% block body %}
 
     {{ include('advert/_form.html.twig') }}
+    <p>
+        Attention : cette annonce sera ajoutée directement
+        sur la page d'accueil après validation du formulaire.
+    </p>
 
+{% endblock %}
+
+{% block footer %}
     {{ parent() }}
 {% endblock %}

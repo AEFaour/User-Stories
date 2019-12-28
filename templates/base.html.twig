@@ -8,8 +8,19 @@
     {% endblock %}
 </head>
 <body>
+{% block header %}
+    <header class="card">
+        <h1 class="card-header text-danger text-center">Annonces</h1>
+    </header>
+    <hr>
+{% endblock %}
 {% block body %}
-    <footer> {{ copyright }}</footer>
+
+
+{% endblock %}
+{% block footer %}
+    <hr>
+    <footer class="card-footer text-danger text-center"> {{ copyright }}</footer>
 {% endblock %}
 {% block javascripts %}
     {{ encore_entry_script_tags('app') }}
