@@ -17,7 +17,7 @@ security:
         login:
             pattern: ^/login
             anonymous: true
-         main:
+        main:
             pattern: ^/
             anonymous: true
             provider: user_provider

@@ -17,15 +17,15 @@ class AdvertFixtures extends Fixture implements DependentFixtureInterface
         $numberOfUsers = 5;
 
         for($i=1; $i <= 100; $i++){
-            $ad = new Advert();
-            $ad ->setTitle($faker->sentence(8))
+            $advert = new Advert();
+            $advert ->setTitle($faker->sentence(8))
                 ->setText($faker->text(mt_rand(300, 1500)))
                 ->setCreatedAt($faker->dateTimeThisDecade)
                 ->setPhoto($faker->image('public/uploads/photos',400,600, null, false))
-                ->setCategory($this->getReference("category_". mt_rand(1, $numberOfCategory)))
+                ->setCategory($this->getReference("category_".mt_rand(1, $numberOfCategory)))
                 ->setUser($this->getReference("user_". mt_rand(1, $numberOfUsers)));
-            $this->addReference("ad_$i", $ad);
-            $manager->persist($ad);
+            $this->addReference("ad_$i", $advert);
+            $manager->persist($advert);
         }
 
         $manager->flush();

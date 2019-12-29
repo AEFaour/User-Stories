@@ -24,11 +24,11 @@ class CategoryFixtures extends Fixture
         $manager->flush();
     }
 
-    private function createCategory($category, $order){
-        $newCategory = new Category();
-        $newCategory->setCategory($category);
-        $this->addReference("newCategory_$order", $newCategory);
-        return $newCategory;
+    private function createCategory($kind, $order){
+        $category = new Category();
+        $category->setCategory($kind);
+        $this->addReference("category_$order", $category);
+        return $category;
 
     }
 }
