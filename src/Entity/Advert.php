@@ -46,7 +46,7 @@ class Advert
      * @ORM\ManyToOne(targetEntity="User", inversedBy="adverts")
      * @var User
      */
-    private $user;
+    private $advertUser;
 
     public function getId(): ?int
     {
@@ -113,14 +113,14 @@ class Advert
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getAdvertUser(): ?User
     {
-        return $this->user;
+        return $this->advertUser;
     }
 
-    public function setUser(?User $user): self
+    public function setAdvertUser(?User $advertUser): self
     {
-        $this->user = $user;
+        $this->advertUser = $advertUser;
 
         return $this;
     }

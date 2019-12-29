@@ -7,21 +7,15 @@
 
 {% block body %}
 
-    <h2>Liste des annonces</h2>
+    {% if is_granted('ROLE_USER') %}
+        <div class="text-right mb-2">
+            <a href="{{ path('advert-add') }}" class="btn btn-primary">
+                Nouvelle annonce
+            </a>
+        </div>
+    {% endif %}
 
-    <ul>
-        {% for advert in listAdverts %}
-            <li>
-                <a href="{{ path('advert_view', {'id': advert.id}) }}">
-                    {{ advert.title }}
-                </a>
-                par {{ advert.user }},
-                le {{ advert.createdAt|date('d/m/Y') }}
-            </li>
-        {% else %}
-            <li>Pas (encore !) d'annonces</li>
-        {% endfor %}
-    </ul>
+    {% include 'advert/_advert-table.html.twig' %}
 
 
 {% endblock %}

@@ -1,0 +1,59 @@
+
+
+
+
+<table class="table table-striped table-danger text-center">
+    <thead>
+    <tr>
+        <th>
+            {{ knp_pagination_sortable(advertList, 'Titre', 'a.title') }}
+        </th>
+        <th>Utilisateur</th>
+        <th>Categorie</th>
+        <th>Annonce</th>
+        <th>Photo</th>
+        <th>
+            {% if is_granted('ROLE_USER') %}
+                Actions
+            {% endif %}
+        </th>
+    </tr>
+    </thead>
+
+   <tbody>
+   {% for advert in advertList %}
+
+       <tr>
+
+           <td width="25%">
+               <a href="{{ path('advert_view', {'id': advert.id}) }}">
+                   {{ advert.title }}
+               </a>
+           </td>
+           <td> {{ advert.advertUser.firstName }}-{{ advert.advertUser.name}} </td>
+           <td> {{ advert.category.category }}</td>
+           <td  width="30%"> <p class="text-justify"> {{ advert.text }}</p></td>
+           <td><img src="{{ asset('uploads/photos/' ~ advert.photo) }}" class="img-thumbnail"></td>
+           <td>
+               {% if is_granted('ROLE_USER') %}
+                   <a href="{{ path('advert-add', {'id': advert.id}) }}">
+                       Edit
+                   </a>
+                   <a href="{{ path('advert_delete', {'id': advert.id}) }}">
+                       Supprimer
+                   </a>
+               {% endif %}
+           </td>
+
+       </tr>
+   {% endfor %}
+   </tbody>
+</table>
+
+<div class="pagination">
+    {{ knp_pagination_render(advertList) }}
+</div>
+
+<div class="text-center text-danger">
+    Il y a {{ advertList.getTotalItemCount() }} Annonces
+</div>

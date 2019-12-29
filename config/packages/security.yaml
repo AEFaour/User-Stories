@@ -24,10 +24,10 @@ security:
             form_login:
                 login_path: security-login
                 check_path: user-login-check
-                default_target_path: advert-list
+                default_target_path: advert_index
             logout:
                 path: logout
-                target: advert-list
+                target: advert_index
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

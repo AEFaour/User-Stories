@@ -1,20 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
+
+{% block title %}{{ parent() }} - categories{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1 class="text-center text-danger">Liste de Categories des Annonces</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Anas FAOUR/Documents/User-Stories/src/Controller/CategoryController.php'|file_link(0) }}">src/Controller/CategoryController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Anas FAOUR/Documents/User-Stories/templates/category/index.html.twig'|file_link(0) }}">templates/category/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <table class="table table-danger text-center">
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Categorie</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categoryList %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.category }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        <a href="{{ path('advert_index') }}">Retour à la liste des Annonces</a>
+    </div>
+
+{% endblock %}
+{% block footer %}
+    {{ parent() }}
 {% endblock %}

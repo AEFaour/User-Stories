@@ -38,7 +38,7 @@ class UserFixtures extends Fixture
             ->setFirstName($firstName)
             ->setPassword($this->encoder->encodePassword($user, '123'))
             ->setEmail("$firstName.$name@user-stories.fr");
-        $this->addReference("user_$order", $user);
+        $this->addReference("advert_user_$order", $user);
         return $user;
     }
 }

@@ -3,7 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Advert;
+use App\Entity\Category;
+use App\Entity\User;
+use App\Form\AdvertType;
+use App\Repository\AdvertRepository;
+use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,42 +26,106 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class AdvertController extends AbstractController
 {
     /**
-     * @Route("/{page}", name="advert_index", requirements={"page" = "\d+"}, defaults={"page" = 1})
-     * @param $page
+     * @Route("/", name="advert_index", methods={"GET"})
+     * @param AdvertRepository $repository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
      * @return Response
-     * @throws \Exception
      */
-    public function index($page)
+    public function index(AdvertRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
-        if ($page < 1) {
-            throw new NotFoundHttpException('Page "' . $page . '" inexistante.');
-        }
-        // Notre liste d'annonce en dur
-        $listAdverts = [
+        $advertList = $paginator->paginate(
+            $repository->getAllAdverts(),
+            $request->query->getInt('page', 1),
+            10
+        );
+        dump($advertList);
+        $params = $this->getTwigParametersWithAside(
             [
-                'title' => 'Recherche développpeur Symfony',
-                'id' => 1,
-                'user' => 'Alexandra',
-                'text' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-                'createdAt' => new \Datetime()
-            ],
-            [
-                'title' => 'Mission de webmaster',
-                'id' => 2,
-                'user' => 'Hugo',
-                'text' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-                'createdAt' => new \Datetime()
-            ],
-            [
-                'title' => 'Recherche chef de Projet',
-                'id' => 3,
-                'user' => 'Rony',
-                'text' => 'Nous recherchons un chef de projet - méthode Agile…',
-                'createdAt' => new \Datetime()
+                'advertList' => $advertList, 'pagetitle' => ''
             ]
+        );
+        return $this->render('advert/index.html.twig', $params);
+    }
+
+    /**
+     * @Route("/by-category/{id}", name="advert-by-category")
+     * @param Category $category
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param AdvertRepository $repository
+     * @return Response
+     */
+    public function showByCategory(Category $category, Request $request, PaginatorInterface $paginator, AdvertRepository $repository){
+        $advertList = $paginator->paginate(
+            $repository->getAllByCategory($category),
+            $request->query->getInt('page', 1),
+            10
+        );
+        $params = $this->getTwigParametersWithAside(
+            ['advertList' => $advertList, 'pageTitle' => "de la catégorie : ". $category->getCategory()]
+        );
+        return $this->render('advert/index.html.twig', $params);
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    private function getTwigParametersWithAside($data){
+        $asideData =[
+            'categoryList' => $this->getDoctrine()
+                ->getRepository(Category::class)
+                ->findAll()
         ];
-        return $this->render('advert/index.html.twig', [
-            'listAdverts' => $listAdverts,
+        return array_merge($data, $asideData);
+    }
+
+    /**
+     * @Route("/add", name="advert-add")
+     * @IsGranted("ROLE_AUTHOR")
+     * @param Request $request
+     * @param null $id
+     * @return Response
+     */
+    public function addOrEdit(Request $request, $id=null)
+    {
+        $advert = new Advert();
+        $advert->setAdvertUser($this->getUser());
+        //Equivalent de @IsGranted dans les annotations
+
+        $form = $this->createForm(AdvertType::class, $advert);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            //Gestion de l'upload des photos
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['photo']->getData();
+
+            if ($uploadedFile){
+                //Definition de nouveau nom de fichier
+                $newFileName = uniqid('photo_').'.'. $uploadedFile->guessExtension();
+                //Déplacement de l'upload dans son dossier de destination
+                $uploadedFile->move(
+                    $this->getParameter('advert.photo.path'),
+                    $newFileName
+                );
+                //Ecrire du nom de fichier dans l'entité
+                $advert->setPhoto($newFileName);
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($advert);
+            $em->flush();
+
+            $this->addFlash("sucess", "Votre annonce a été ajouté");
+
+            return $this->redirectToRoute('advert_index');
+        }
+
+        return $this->render('advert/add.html.twig', [
+            'advertForm' => $form->createView(),
         ]);
     }
 
@@ -82,59 +153,27 @@ class AdvertController extends AbstractController
         );
     }
 
+
     /**
-     * @Route("/add", name="advert_add")
+     * @Route("/{id}/edit", name="article_edit", methods={"GET","POST"})
      * @param Request $request
+     * @param Advert $advert
      * @return Response
      */
-    public function add(Request $request)
+    public function edit(Request $request, Advert $advert): Response
     {
-        $advert= new Advert();
-        $advert->setTitle("Recherche d'un développeur React - Node");
-        $advert->setUser("Alexandra");
-        $advert->setText("Nous cherchons un développeur Fullstak React - Node Js sur Paris");
-        $advert->setCreatedAt(28/12/2019);
+        $form = $this->createForm(AdvertType::class, $advert);
+        $form->handleRequest($request);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($advert);
-        $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
 
-        if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce est bien enregistrée');
-
-            return $this->redirectToRoute('advert_view', [
-                'id' => $advert->getId()
-            ]);
+            return $this->redirectToRoute('advert_index');
         }
 
-        return $this->render('advert/add.html.twig');
-
-
-    }
-
-    /**
-     * @Route("/edit/{id}", name="advert_edit", requirements={"id" = "\d+"})
-     * @param $id
-     * @param Request $request
-     * @return RedirectResponse|Response
-     * @throws \Exception
-     */
-    public function edit($id, Request $request)
-    {
-        if ($request->isMethod('POST')) {
-            $request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
-            return $this->redirectToRoute('advert_view', ['id' => 5]);
-        }
-        $advert =
-            [
-                'title' => 'Recherche développpeur Symfony',
-                'id' => $id,
-                'user' => 'Alexandre',
-                'text' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-                'createdAt' => new \Datetime()
-            ];
         return $this->render('advert/edit.html.twig', [
             'advert' => $advert,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -143,27 +182,22 @@ class AdvertController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function delete($id)
-    {
-        return $this->render('advert/delete.html.twig');
+    public function deleteAd($id){
+        $repository = $this->getDoctrine()->getRepository(Advert::class);
+        $advert = $repository->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        if($advert){
+            $entityManager->remove($advert);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute("advert_index");
     }
 
     /**
      * @Route("/menu", name="advert_menu")
+     *
      * @param $limit
      * @return Response
      */
-    public function menu($limit)
-    {
 
-        $listAdverts = [
-            ['id' => 1, 'title' => 'Recherche développeur Symfony'],
-            ['id' => 2, 'title' => 'Mission de webmaster'],
-            ['id' => 3, 'title' => 'Offre de stage webdesigner']
-        ];
-        return $this->render('advert/menu.html.twig', [
-                'listAdverts' => $listAdverts
-            ]
-        );
-    }
 }

@@ -40,7 +40,7 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\OneToMany(targetEntity="Advert", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Advert", mappedBy="advertUser")
      * @var ArrayCollection
      */
     private $adverts;
@@ -115,7 +115,7 @@ class User implements UserInterface
     {
         if (!$this->adverts->contains($advert)) {
             $this->adverts[] = $advert;
-            $advert->setUser($this);
+            $advert->setAdvertUser($this);
         }
 
         return $this;
@@ -126,8 +126,8 @@ class User implements UserInterface
         if ($this->adverts->contains($advert)) {
             $this->adverts->removeElement($advert);
             // set the owning side to null (unless already changed)
-            if ($advert->getUser() === $this) {
-                $advert->setUser(null);
+            if ($advert->getAdvertUser() === $this) {
+                $advert->setAdvertUser(null);
             }
         }
 
