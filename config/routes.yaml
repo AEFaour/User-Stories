@@ -2,3 +2,8 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
+user-login-check:
+  path: /user-login-check
+
+logout:
+  path: /logout

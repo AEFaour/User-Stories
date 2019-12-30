@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} - Ajouter!{% endblock %}
+{% block header %}
+    {{ parent() }}
+{% endblock %}
+{% block body %}
+
+    <h2>Modifier un utilisateur</h2>
+
+
+    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="text-center">
+        <a href="{{ path('advert_index') }}" role="button" class="btn btn-danger">Retour à la liste des Annonces</a>
+    </div>
+    {{ include('user/_delete_form.html.twig') }}
+{% endblock %}
+{% block footer %}
+    <h4 class="text-danger text-right">
+        {{ copyright }}
+    </h4>
+{% endblock %}

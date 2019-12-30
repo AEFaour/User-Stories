@@ -4,20 +4,17 @@
 {% block header %}
     {{ parent() }}
 {% endblock %}
-
 {% block body %}
 
     {% if is_granted('ROLE_USER') %}
         <div class="text-right mb-2">
-            <a href="{{ path('advert-add') }}" class="btn btn-primary">
+            <a href="{{ path('advert-add') }}" role="button" class="btn btn-danger">
                 Nouvelle annonce
             </a>
         </div>
     {% endif %}
 
     {% include 'advert/_advert-table.html.twig' %}
-
-
 {% endblock %}
 {% block footer %}
     {{ parent() }}

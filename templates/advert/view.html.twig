@@ -12,21 +12,17 @@
                 <tr>
                     <td width="20%"></td>
                     <td width="30%">
-                        <br>
-                        <br>
-                        <br>
+                        <br> <br> <br>
                         <p class="text-justify">
                             {{ advert.text }}
                         </p>
-                        <br>
-                        <br>
-                        <br>
+                        <br> <br> <br>
                         <p>
                             {{ advert.advertUser.firstName }}-{{ advert.advertUser.name }}
                             a posté cette annonce le {{ advert.createdAt | date('d/m/Y') }}
                         </p>
                         <p>
-                            Catégorie :  {{ advert.category.category }} .
+                            Catégorie : {{ advert.category.category }} .
                         </p>
                     </td>
                     <td width="50%"> {% if advert.photo is defined %}
@@ -41,10 +37,11 @@
         </article>
     </section>
     <div class="text-center">
-        <a href="{{ path('advert_index') }}">Retour à la liste des Annonces</a>
+        <a href="{{ path('advert_index') }}" role="button" class="btn btn-danger">Retour à la liste des Annonces</a>
     </div>
 {% endblock %}
-
 {% block footer %}
-    {{ parent() }}
+    <h4 class="text-danger text-right">
+        {{ copyright }}
+    </h4>
 {% endblock %}

@@ -83,7 +83,7 @@ class AdvertController extends AbstractController
 
     /**
      * @Route("/add", name="advert-add")
-     * @IsGranted("ROLE_AUTHOR")
+     * @IsGranted("ROLE_USER")
      * @param Request $request
      * @param null $id
      * @return Response
@@ -93,7 +93,7 @@ class AdvertController extends AbstractController
         $advert = new Advert();
         $advert->setAdvertUser($this->getUser());
         //Equivalent de @IsGranted dans les annotations
-
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $form = $this->createForm(AdvertType::class, $advert);
 
         $form->handleRequest($request);
