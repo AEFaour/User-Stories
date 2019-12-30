@@ -1,4 +1,26 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-danger fixed-top">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+            {% if app.user.email is defined %}
+                <li class="nav-item navbar-text">
+                    {{ app.user.email }}
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a href="{{ path('security-login') }}" class="nav-link btn btn-danger" role="button">Connection</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ path('user_add') }}" role="button" class=" nav-link btn btn-danger">Inscription</a>
+                </li>
+            {% endif %}
+            <li class="nav-item">
+                <a href="{{ path('logout') }}" class="nav-link btn btn-danger" role="button" >Déconnection</a>
+            </li>
+        </ul>
+    </div>
+
     <a class="navbar-brand" href="{{ path('advert_index') }}">User Stories</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,25 +35,7 @@
             <li class="nav-item">
                 <a href="{{ path('category_index') }}" role="button" class="nav-link btn btn-danger">Categories</a>
             </li>
-
-            {% if app.user.email is defined %}
-                <li class="nav-item navbar-text">
-                    {{ app.user.email }}
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ path('logout') }}" class="nav-link btn btn-danger" role="button" >logout</a>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a href="{{ path('security-login') }}" class="nav-link btn btn-danger" role="button">login</a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ path('user_add') }}" role="button" class=" nav-link btn btn-danger">Registration</a>
-                </li>
-            {% endif %}
         </ul>
-
     </div>
+
 </nav>

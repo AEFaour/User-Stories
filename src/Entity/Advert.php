@@ -39,13 +39,11 @@ class Advert
 
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="adverts")
-     * @var Category
      */
     private $category;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="adverts")
-     * @var User
      */
     private $advertUser;
 

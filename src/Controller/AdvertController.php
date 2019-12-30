@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Security;
+
 
 
 /**
@@ -25,6 +27,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class AdvertController extends AbstractController
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * AdvertController constructor.
+     * @param $security
+     */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
+
     /**
      * @Route("/", name="advert_index", methods={"GET"})
      * @param AdvertRepository $repository
@@ -83,17 +100,18 @@ class AdvertController extends AbstractController
 
     /**
      * @Route("/add", name="advert-add")
-     * @IsGranted("ROLE_USER")
      * @param Request $request
      * @param null $id
-     * @return Response
+     * @return RedirectResponse|Response
      */
     public function addOrEdit(Request $request, $id=null)
     {
         $advert = new Advert();
-        $advert->setAdvertUser($this->getUser());
-        //Equivalent de @IsGranted dans les annotations
         $this->denyAccessUnlessGranted('ROLE_USER');
+
+        $advert->setAdvertUser($this->security->getUser());
+
+
         $form = $this->createForm(AdvertType::class, $advert);
 
         $form->handleRequest($request);
@@ -193,11 +211,5 @@ class AdvertController extends AbstractController
         return $this->redirectToRoute("advert_index");
     }
 
-    /**
-     * @Route("/menu", name="advert_menu")
-     *
-     * @param $limit
-     * @return Response
-     */
 
 }
