@@ -99,14 +99,22 @@ class AdvertController extends AbstractController
     }
 
     /**
-     * @Route("/add", name="advert-add")
+     * @Route("/add", name="advert-add", methods={"GET","POST"})
      * @param Request $request
      * @param null $id
      * @return RedirectResponse|Response
      */
     public function addOrEdit(Request $request, $id=null)
     {
-        $advert = new Advert();
+
+        if($id == null){
+            $advert = new Advert();
+        } else {
+            $advert = $this   ->getDoctrine()
+                ->getRepository(advert::class)
+                ->find($id);
+        }
+
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $advert->setAdvertUser($this->security->getUser());
