@@ -23,7 +23,7 @@ class AdvertFixtures extends Fixture implements DependentFixtureInterface
                 ->setCreatedAt($faker->dateTimeThisDecade)
                 ->setPhoto($faker->image('public/uploads/photos',400,600, null, false))
                 ->setCategory($this->getReference("category_".mt_rand(1, $numberOfCategory)))
-                ->setAdvertUser($this->getReference("advert_user_". mt_rand(1, $numberOfUsers)));
+                ->setUser($this->getReference("user_". mt_rand(1, $numberOfUsers)));
             $this->addReference("ad_$i", $advert);
             $manager->persist($advert);
         }

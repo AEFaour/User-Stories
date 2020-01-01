@@ -1,12 +1,9 @@
 <?php
-
 namespace App\Entity;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
@@ -18,29 +15,24 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
-
     /**
      * @ORM\Column(type="string", length=80)
      */
     private $name;
-
     /**
      * @ORM\Column(type="string", length=80)
      */
     private $firstName;
-
     /**
      * @ORM\Column(type="string", length=150, name="pwd")
      */
     private $password;
-
     /**
      * @ORM\Column(type="string", length=150)
      */
     private $email;
-
     /**
-     * @ORM\OneToMany(targetEntity="Advert", mappedBy="advertUser")
+     * @ORM\OneToMany(targetEntity="Advert", mappedBy="user")
      * @var ArrayCollection
      */
     private $adverts;
@@ -63,7 +55,6 @@ class User implements UserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -75,7 +66,6 @@ class User implements UserInterface
     public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -87,7 +77,6 @@ class User implements UserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -99,7 +88,6 @@ class User implements UserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -115,9 +103,8 @@ class User implements UserInterface
     {
         if (!$this->adverts->contains($advert)) {
             $this->adverts[] = $advert;
-            $advert->setAdvertUser($this);
+            $advert->setUser($this);
         }
-
         return $this;
     }
 
@@ -126,11 +113,10 @@ class User implements UserInterface
         if ($this->adverts->contains($advert)) {
             $this->adverts->removeElement($advert);
             // set the owning side to null (unless already changed)
-            if ($advert->getAdvertUser() === $this) {
-                $advert->setAdvertUser(null);
+            if ($advert->getUser() === $this) {
+                $advert->setUser(null);
             }
         }
-
         return $this;
     }
 

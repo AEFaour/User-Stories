@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Advert;
 use App\Entity\Category;
-use App\Entity\User;
+//use App\Entity\User;
 use App\Form\AdvertType;
 use App\Repository\AdvertRepository;
 use Knp\Component\Pager\PaginatorInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Security;
-
+use Symfony\Component\Security\Core\User\UserInterface;
 
 
 /**
@@ -117,7 +117,7 @@ class AdvertController extends AbstractController
 
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $advert->setAdvertUser($this->security->getUser());
+        $advert->setUser($this->security->getUser());
 
 
         $form = $this->createForm(AdvertType::class, $advert);
@@ -181,7 +181,7 @@ class AdvertController extends AbstractController
 
 
     /**
-     * @Route("/{id}/edit", name="article_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="advert_edit", methods={"GET","POST"})
      * @param Request $request
      * @param Advert $advert
      * @return Response

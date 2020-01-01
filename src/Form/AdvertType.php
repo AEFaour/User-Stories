@@ -46,11 +46,11 @@ class AdvertType extends AbstractType
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'Categorie de l\'annonce'
+                'choice_label' => 'category'
             ])
             ->add('user',  EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'Nom de l\'Utilisateur'
+                'choice_label' => 'name'
             ])
             ->add('submit', SubmitType::class,
                 ["label" => "Valider", "attr" => ["class" => "btn btn-success"]])
